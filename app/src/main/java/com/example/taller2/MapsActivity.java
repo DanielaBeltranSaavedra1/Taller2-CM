@@ -69,8 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //geocoder
     Geocoder mGeocoder;
     FusedLocationProviderClient mFusedLocationClient;
-    Double actualLatitude = Double.valueOf(0);
-    Double actualLongitude = Double.valueOf(0);
+    Double actualLatitude = Double.valueOf(4.62);
+    Double actualLongitude = Double.valueOf(-74.0);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
