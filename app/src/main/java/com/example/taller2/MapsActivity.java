@@ -280,8 +280,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location == null) {
                             requestNewLocationData();
                         } else {
-                            actualLatitude = location.getLatitude();
-                            actualLongitude = location.getLongitude();
+                          //  actualLatitude = location.getLatitude();
+                           // actualLongitude = location.getLongitude();
                             //latitudeTextView.setText(location.getLatitude() + "");
                             //longitTextView.setText(location.getLongitude() + "");
                         }
