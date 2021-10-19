@@ -51,7 +51,7 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity  {
+public class MapsActivity extends FragmentActivity {
 
     private EditText search;
     private GoogleMap mMap;
@@ -115,7 +115,7 @@ public class MapsActivity extends FragmentActivity  {
                 return true;
             }
         });
-       // mapFragment.getMapAsync(this);
+      //  mapFragment.getMapAsync((OnMapReadyCallback) this);
     }
 
 
@@ -176,11 +176,12 @@ public class MapsActivity extends FragmentActivity  {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    /*@Override
+   /* @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker in Bogota and move the camera
+
         LatLng bogota = new LatLng(4.62, -74.07);
         mMap.addMarker(new MarkerOptions().position(bogota).title("Marker in Bogota"));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
