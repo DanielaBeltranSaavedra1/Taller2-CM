@@ -1,8 +1,13 @@
 package com.example.taller2;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -38,6 +43,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ActivityMapsBinding binding;
     private Marker searchMarker;
     private Marker touchMarker;
+    String mapsPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+    public static final int MAPS_ID = 1;
 
     //light sensor
     SensorManager sensorManager;
@@ -50,7 +57,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        requestPermission( this,mapsPermission, "Necesito el permiso para mostrar los contactos", 100);
+        updateUI();
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -92,7 +100,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    private void updateUI() {
+        if (ContextCompat.checkSelfPermission(this, mapsPermission) == PackageManager.PERMISSION_GRANTED) {
+            //Cursor cursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,projection,null,null,null);
+            // adapter.changeCursor(cursor);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 100){
+            updateUI();
+        }
+    }
+    private void requestPermission(Activity context, String permission, String justification, int id) {
+        if(ContextCompat.checkSelfPermission(context,permission) != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(context,permission)){
+                Toast.makeText(context, justification, Toast.LENGTH_SHORT).show();
 
+            }
+            ActivityCompat.requestPermissions(context, new  String[]{permission},id);
+        }
+
+    }
     private SensorEventListener createSensorEventListener(){
         SensorEventListener lightSensorListener = new SensorEventListener() {
             @Override
