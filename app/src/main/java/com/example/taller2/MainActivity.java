@@ -9,7 +9,6 @@ import android.widget.ImageButton;
 
 import com.example.taller2.ui.CameraActivity;
 import com.example.taller2.ui.ContactsActiviy;
-import com.example.taller2.ui.MapsActivity;
 
 public class MainActivity extends AppCompatActivity {
     ImageButton btnCamera;
