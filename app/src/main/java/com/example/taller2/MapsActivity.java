@@ -51,7 +51,7 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private EditText search;
     private GoogleMap mMap;
@@ -115,7 +115,7 @@ public class MapsActivity extends FragmentActivity {
                 return true;
             }
         });
-      //  mapFragment.getMapAsync((OnMapReadyCallback) this);
+        mapFragment.getMapAsync(this);
     }
 
 
@@ -176,7 +176,7 @@ public class MapsActivity extends FragmentActivity {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-   /* @Override
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -200,7 +200,7 @@ public class MapsActivity extends FragmentActivity {
                 }
             }
         });
-    }*/
+    }
     @Override
     protected void onResume() {
         super.onResume();
