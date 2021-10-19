@@ -60,7 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker touchMarker;
     String mapsPermission = Manifest.permission.ACCESS_FINE_LOCATION;
     public static final int MAPS_ID = 1;
-    Location currentLocation;
+
     //light sensor
     SensorManager sensorManager;
     Sensor lightSensor;
@@ -71,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FusedLocationProviderClient mFusedLocationClient;
     Double actualLatitude = Double.valueOf(4.62);
     Double actualLongitude = Double.valueOf(-74.0);
-    SupportMapFragment mapFragment;
+   // Location currentLo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,10 +91,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-         mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
-        // React to the send button in the key board
 
         search = findViewById(R.id.searchMap);
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -187,9 +185,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Bogota and move the camera
 
-        LatLng bogota = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng bogota = new LatLng(actualLatitude, actualLongitude);
         mMap.addMarker(new MarkerOptions().position(bogota).title("Marker in Bogota"));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(bogota));
@@ -269,25 +266,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // @SuppressLint("MissingPermission")
     private void getLastLocation() {
-        //if(ActivityCompat.checkSelfPermission(this,Manifest,ACCES_FINE))
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},100);
 
-             return;
-        }
-        Task<Location> task = mFusedLocationClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if(location !=null){
-                     currentLocation = location;
-                    // mapFragment = (SupportMapFragment)
-                    //getSupportFragmentManager().findFragmentById(R.id.map);
-                    //supportMapFragment.getMapAsync(this);
-                }
-
-            }
-        });
     }
 
     @SuppressLint("MissingPermission")
