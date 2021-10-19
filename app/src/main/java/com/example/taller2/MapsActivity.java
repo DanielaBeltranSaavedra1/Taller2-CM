@@ -69,7 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //geocoder
     Geocoder mGeocoder;
     FusedLocationProviderClient mFusedLocationClient;
-
+    Double actualLatitude = Double.valueOf(0);
+    Double actualLongitude = Double.valueOf(0);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,7 +184,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Bogota and move the camera
 
-        LatLng bogota = new LatLng(4.62, -74.07);
+        LatLng bogota = new LatLng(actualLatitude, actualLongitude);
         mMap.addMarker(new MarkerOptions().position(bogota).title("Marker in Bogota"));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(bogota));
@@ -279,6 +280,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location == null) {
                             requestNewLocationData();
                         } else {
+                            actualLatitude = location.getLatitude();
+                            actualLongitude = location.getLongitude();
                             //latitudeTextView.setText(location.getLatitude() + "");
                             //longitTextView.setText(location.getLongitude() + "");
                         }
