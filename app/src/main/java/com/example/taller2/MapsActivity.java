@@ -69,9 +69,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //geocoder
     Geocoder mGeocoder;
     FusedLocationProviderClient mFusedLocationClient;
-     FusedLocationProviderClient fusedLocationProviderClient;
-    Double longitude;
-    Double latitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,21 +121,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void updateUI() {
         if (ContextCompat.checkSelfPermission(this, mapsPermission) == PackageManager.PERMISSION_GRANTED) {
-            Log.i("TAG", "permission granted");
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener( this, new OnSuccessListener<Location>(){
-                @Override
-                public void onSuccess(Location location) {
-                    Log.i("TAG", "location null");
-                    if(location != null){
-                        Log.i("TAG", "location: "+location.toString());
-                        longitude = location.getLongitude();
-                        latitude = location.getLatitude();
-
-                    }
-
-                }
-
-            });
 
             //Cursor cursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,projection,null,null,null);
             // adapter.changeCursor(cursor);
@@ -201,7 +183,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Bogota and move the camera
 
-        LatLng bogota = new LatLng(latitude, longitude);
+        LatLng bogota = new LatLng(4.62, -74.07);
         mMap.addMarker(new MarkerOptions().position(bogota).title("Marker in Bogota"));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(bogota));
