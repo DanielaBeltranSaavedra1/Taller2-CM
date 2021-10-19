@@ -60,7 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker touchMarker;
     String mapsPermission = Manifest.permission.ACCESS_FINE_LOCATION;
     public static final int MAPS_ID = 1;
-
+    Location currentLocation;
     //light sensor
     SensorManager sensorManager;
     Sensor lightSensor;
@@ -71,6 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FusedLocationProviderClient mFusedLocationClient;
     Double actualLatitude = Double.valueOf(4.62);
     Double actualLongitude = Double.valueOf(-74.0);
+    SupportMapFragment mapFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
         // React to the send button in the key board
@@ -127,27 +128,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // adapter.changeCursor(cursor);
         }
     }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 100){
+        if (requestCode == 100) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
             }
             updateUI();
         }
     }
+
     private void requestPermission(Activity context, String permission, String justification, int id) {
-        if(ContextCompat.checkSelfPermission(context,permission) != PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(context,permission)){
+        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, permission)) {
                 Toast.makeText(context, justification, Toast.LENGTH_SHORT).show();
 
             }
-            ActivityCompat.requestPermissions(context, new  String[]{permission},id);
+            ActivityCompat.requestPermissions(context, new String[]{permission}, id);
         }
 
     }
-    private SensorEventListener createSensorEventListener(){
+
+    private SensorEventListener createSensorEventListener() {
         SensorEventListener lightSensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -158,13 +162,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     } else {
                         Log.i("MAPS", "LIGHT MAP" + event.values[0]);
-                        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this,R.raw.googlemapligth ));
+                        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapsActivity.this, R.raw.googlemapligth));
                     }
                 }
             }
 
             @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
         };
         return lightSensorListener;
     }
@@ -184,18 +189,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Bogota and move the camera
 
-        LatLng bogota = new LatLng(actualLatitude, actualLongitude);
+        LatLng bogota = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.addMarker(new MarkerOptions().position(bogota).title("Marker in Bogota"));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(bogota));
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
                 String name = searchByLocation(latLng.latitude, latLng.longitude);
-                if(!"".equals(name)){
-                    if(touchMarker!=null) touchMarker.remove();
-                    touchMarker= mMap.addMarker(new MarkerOptions()
+                if (!"".equals(name)) {
+                    if (touchMarker != null) touchMarker.remove();
+                    touchMarker = mMap.addMarker(new MarkerOptions()
                             .position(latLng).title(name)
                             .icon(BitmapDescriptorFactory
                                     .defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
@@ -203,6 +208,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -219,7 +225,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         sensorManager.unregisterListener(lightSensorListener);
     }
 
-    private String searchByLocation (double latitude, double longitude) {
+    private String searchByLocation(double latitude, double longitude) {
         String addressName = "";
         try {
             List<Address> addresses = mGeocoder.getFromLocation(latitude, longitude, 2);
@@ -234,18 +240,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return addressName;
     }
 
-    private LatLng searchByName (String name){
+    private LatLng searchByName(String name) {
         LatLng position = null;
         if (!name.isEmpty()) {
             try {
-                List<Address>addresses = mGeocoder.getFromLocationName(name,2);
-                if(addresses!= null && !addresses.isEmpty()) {
+                List<Address> addresses = mGeocoder.getFromLocationName(name, 2);
+                if (addresses != null && !addresses.isEmpty()) {
                     Address addressResult = addresses.get(0);
                     position = new LatLng(addressResult.getLatitude(), addressResult.getLongitude());
                 } else {
                     Toast.makeText(MapsActivity.this, "Direccion no encontrada", Toast.LENGTH_SHORT).show();
                 }
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
@@ -254,49 +260,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return position;
     }
 
-    private Marker createmarker (double latitude, double longitude, String name){
+    private Marker createmarker(double latitude, double longitude, String name) {
         Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
                 .icon(BitmapDescriptorFactory
                         .defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         return marker;
     }
 
-    @SuppressLint("MissingPermission")
+    // @SuppressLint("MissingPermission")
     private void getLastLocation() {
-        // check if permissions are given
-        if (checkPermissions()) {
+        //if(ActivityCompat.checkSelfPermission(this,Manifest,ACCES_FINE))
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},100);
 
-            // check if location is enabled
-            if (isLocationEnabled()) {
-
-                // getting last
-                // location from
-                // FusedLocationClient
-                // object
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        Location location = task.getResult();
-                        if (location == null) {
-                            requestNewLocationData();
-                        } else {
-                          //  actualLatitude = location.getLatitude();
-                           // actualLongitude = location.getLongitude();
-                            //latitudeTextView.setText(location.getLatitude() + "");
-                            //longitTextView.setText(location.getLongitude() + "");
-                        }
-                    }
-                });
-            } else {
-                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        } else {
-            // if permissions aren't available,
-            // request for permissions
-            requestPermissions();
+             return;
         }
+        Task<Location> task = mFusedLocationClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if(location !=null){
+                     currentLocation = location;
+                    // mapFragment = (SupportMapFragment)
+                    //getSupportFragmentManager().findFragmentById(R.id.map);
+                    //supportMapFragment.getMapAsync(this);
+                }
+
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
